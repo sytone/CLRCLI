@@ -3,6 +3,7 @@ using CLRCLI.Widgets;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
@@ -11,11 +12,38 @@ namespace TestHarness
 {
     class Program
     {
+        const int STD_OUTPUT_HANDLE = -11;
+        const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 4;
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern IntPtr GetStdHandle(int nStdHandle);
+
+        [DllImport("kernel32.dll")]
+        static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+
+        [DllImport("kernel32.dll")]
+        static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+
         static void Main(string[] args)
         {
+            var handle = GetStdHandle(STD_OUTPUT_HANDLE);
+            uint mode;
+            GetConsoleMode(handle, out mode);
+            mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
+            SetConsoleMode(handle, mode);
+
+
             var root = new RootWindow();
 
-            var dialog = new Dialog(root) { Text = "Hello World!", Width = 60, Height = 32, Top = 4, Left = 4, Border = BorderStyle.Thick };
+            new Label(root) { Text = "Test of TextBoxes!", Top = 2, Left = 2 };
+            
+            var mLine = new MultiLineTextbox(root);
+            mLine.Width = root.Width - 20;
+            mLine.Height = 10;
+            mLine.Top = 10;
+            mLine.Left = 10;
+
+            /*var dialog = new Dialog(root) { Text = "Hello World!", Width = 60, Height = 32, Top = 4, Left = 4, Border = BorderStyle.Thick };
             new Label(dialog) {Text = "This is a dialog!", Top = 2, Left = 2};
             var button = new Button(dialog) { Text = "Oooooh", Top = 4, Left = 6 };
             var button2 = new Button(dialog) { Text = "Click", Top = 4, Left = 18 };
@@ -34,7 +62,7 @@ namespace TestHarness
             }
 
             button.Clicked += button_Clicked;
-
+            */
             root.Run();
         }
 
