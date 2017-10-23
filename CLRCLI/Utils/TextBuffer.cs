@@ -11,14 +11,14 @@ namespace CLRCLI.Utils
         public long Col;
         public long Line;
     }
-
+    
     internal class TextBuffer
     {
         private const long InitialNumberOfLines = 80;
         private const long InitialNumberOfColumns = 120;
         private const long ResizeColumnDelta = 10;
 
-        private Char[][] _buffer;
+        private BufferLine[] _buffer;
         private long _maxLine = 0, _maxCol = 0;
         private CoursorPos _pos;
 
@@ -30,48 +30,61 @@ namespace CLRCLI.Utils
             _maxCol = columns;
             _maxLine = lines;
 
-            _buffer = new Char[_maxLine][];
+            _buffer = new BufferLine[_maxLine];
             for (int l = 0; l < _maxLine; ++l)
-                _buffer[l] = new Char[_maxCol];
+                _buffer[l] = new BufferLine(_maxCol);
         }
 
-        private long ResizeLine(long line, long delta = ResizeColumnDelta)
+        public TextBuffer NewLine(long newLineSize = ResizeColumnDelta, long howManyLines = 1)
         {
-            long c;
-            Char[] tmpLine = new Char[_buffer[line].LongLength + delta];
-            for (c = 0; c < tmpLine.LongLength && c < _buffer[line].LongLength && _buffer[line][c] != Char.MinValue; ++c)
-                tmpLine[c] = _buffer[line][c];
-            _buffer[_pos.Line] = tmpLine;
-            return c;
-        }
+            BufferLine[] tmp = new BufferLine[_buffer.LongLength + howManyLines];
+            BufferLine newLine;
+            if (_pos.Col < _buffer[_pos.Line].TextLength)
+            {
+                newLine = new BufferLine(_buffer[_pos.Line].TextLength - _pos.Col + newLineSize);
+                newLine.CopyFrom(_buffer[_pos.Line], 0, _pos.Col);
+                _buffer[_pos.Line].Erase(_pos.Col);
+            } else
+                newLine = new BufferLine(newLineSize);
+            long l, dl;
+            for (l = 0; l <= _pos.Line && l < _buffer.LongLength; ++l)
+                tmp[l] = _buffer[l];
+            for (dl = 0; dl < howManyLines; ++dl)
+                tmp[l + dl] = newLine;
+            for (; l < _buffer.LongLength; ++l)
+                tmp[l + dl] = _buffer[l];
 
+            _buffer = tmp;
+            return this;
+        }
+        
         public TextBuffer Add(Char ch)
         {
+            if(ch == '\n')
+            {
+                NewLine();
+                MoveCoursor(-_pos.Col, 1);
+                return this;
+            }
             if(_buffer.LongLength <= _pos.Line)
             {
-                Char[][] tmp = new Char[_pos.Line+1][];
-                _buffer.CopyTo(tmp, 0);
-                for (long l = _buffer.LongLength; l < tmp.LongLength; ++l)
-                    tmp[l] = new Char[ResizeColumnDelta];
+                NewLine(howManyLines: _pos.Line + 1 - _buffer.LongLength);
             }
 
             if (_buffer[_pos.Line].LongLength - 1 <= _pos.Col)
             {
-                long lastChar = ResizeLine(_pos.Line, _pos.Col + ResizeColumnDelta - _buffer[_pos.Line].LongLength);
-                for (long c = lastChar; c < _pos.Col; ++c)
-                    if (_buffer[_pos.Line][c] == Char.MinValue)
-                        _buffer[_pos.Line][c] = ' ';
+                _buffer[_pos.Line].Resize(_pos.Col + ResizeColumnDelta - _buffer[_pos.Line].LongLength);
                 _buffer[_pos.Line][_pos.Col] = ch;
             }
             else
             {
                 long c;
-                for (c = _buffer[_pos.Line].LongLength - 1; c > _pos.Col && _buffer[_pos.Line][c] == Char.MinValue; --c)
+                for (c = _buffer[_pos.Line].LongLength - 1; c >= _pos.Col && _buffer[_pos.Line][c] == Char.MinValue; --c)
                     ;
                 if (c == _buffer[_pos.Line].LongLength - 1)
-                    ResizeLine(_pos.Line, ResizeColumnDelta);
+                    _buffer[_pos.Line].Resize(ResizeColumnDelta);
 
-                for (; c > _pos.Col; --c)
+                for (; c >= _pos.Col; --c)
                 {
                     _buffer[_pos.Line][c + 1] = _buffer[_pos.Line][c];
                 }
@@ -114,13 +127,15 @@ namespace CLRCLI.Utils
                     if (_pos.Line == 0)
                         return this;
 
-                    Char[] tmpLine = new Char[_buffer[_pos.Line - 1].LongLength + _buffer[_pos.Line].LongLength];
-                    _buffer[_pos.Line - 1].CopyTo(tmpLine, 0L);
-                    _buffer[_pos.Line].CopyTo(tmpLine, _buffer[_pos.Line - 1].LongLength);
-                    _buffer[_pos.Line - 1] = tmpLine;
+                    long endOfPrevLine = _buffer[_pos.Line - 1].TextLength;
+
+                    _buffer[_pos.Line - 1].Merge(_buffer[_pos.Line]);
                     for (long l = _pos.Line; l < _buffer.LongLength - 1; ++l)
                         _buffer[l] = _buffer[l + 1];
-                    _buffer[_buffer.LongLength - 1] = new Char[ResizeColumnDelta];
+                    _buffer[_buffer.LongLength - 1] = new BufferLine(ResizeColumnDelta);
+
+                    _pos.Col = endOfPrevLine;
+                    --_pos.Line;
                 }
                 else
                 {
@@ -142,34 +157,40 @@ namespace CLRCLI.Utils
                 //there is nothing
                 return this;
             }
-            if (_buffer[_pos.Line].LongLength <= _pos.Col)
+            if (_buffer[_pos.Line].TextLength <= _pos.Col)
             {
                 if (_buffer.LongLength - 1 == _pos.Line)
                     return this;
+                if (_buffer[_pos.Line].LongLength <= _pos.Col)
+                    _buffer[_pos.Line].Resize(_pos.Col + ResizeColumnDelta - _buffer[_pos.Line].LongLength);
+                _buffer[_pos.Line][_pos.Col-1] = ' ';
+                _buffer[_pos.Line].Merge(_buffer[_pos.Line + 1]);
                 
-                Char[] tmpLine = new Char[_pos.Col + _buffer[_pos.Line+1].LongLength];
-                for (long c = 0; c < _buffer[_pos.Line].LongLength; ++c)
-                    tmpLine[c] = _buffer[_pos.Line][c];
-                for (long c = _buffer[_pos.Line].LongLength; c < _pos.Col; ++c)
-                    tmpLine[c] = ' ';
-                for (long c = _pos.Col; c < tmpLine.LongLength; ++c)
-                    tmpLine[c] = tmpLine[c- _pos.Col];
-                _buffer[_pos.Line] = tmpLine;
                 for (long l = _pos.Line + 1; l < _buffer.LongLength - 1; ++l)
                     _buffer[l] = _buffer[l + 1];
-                _buffer[_buffer.LongLength - 1] = new Char[ResizeColumnDelta];
+                _buffer[_buffer.LongLength - 1] = new BufferLine(ResizeColumnDelta);
             }
             else
             {
-                for (long c = _pos.Col; c <= _buffer[_pos.Line].LongLength - 2; ++c)
+                for (long c = _pos.Col; c < _buffer[_pos.Line].TextLength - 1; ++c)
                 {
                     _buffer[_pos.Line][c] = _buffer[_pos.Line][c + 1];
                 }
-                _buffer[_pos.Line][_buffer[_pos.Line].LongLength - 1] = Char.MinValue;
+                _buffer[_pos.Line][_buffer[_pos.Line].TextLength - 1] = Char.MinValue;
             }
             return this;
         }
 
+        public TextBuffer Home()
+        {
+            _pos.Col = 0;
+            return this;
+        }
+        public TextBuffer End()
+        {
+            _pos.Col = _buffer[_pos.Line].TextLength;
+            return this;
+        }
         public TextBuffer MoveCoursor(long x, long y)
         {
             _pos.Col += x;
@@ -185,18 +206,26 @@ namespace CLRCLI.Utils
         {
             List<string> lines = new List<string>();
             StringBuilder sb = new StringBuilder();
-            for (long l = y; l < _buffer.LongLength && l < y + height; ++l)
+            for (long l = y; l < y + height; ++l)
             {
-                for (long c = x; c < _buffer[l].LongLength && c < x + width && _buffer[l][c] != Char.MinValue; ++c)
+                if(l > _buffer.LongLength)
                 {
+                    lines.Add(new string(' ', (int)width));
+                    continue;
+                }
+                for (long c = x; c < x + width; ++c)
+                {
+                    Char character = c < _buffer[l].LongLength ? _buffer[l][c] : ' ';
+                    if (character == Char.MinValue)
+                        character = ' ';
                     if (l == _pos.Line && c == _pos.Col)
                     {
                         sb.Append("\x1B[4m");
-                        sb.Append(_buffer[l][c]);
-                        sb.Append("\x1B[0m");
+                        sb.Append(character);
+                        sb.Append("\x1B[0m\x1B[45m\x1B[97m");
                     }
                     else
-                        sb.Append(_buffer[l][c]);
+                        sb.Append(character);
                 }
                 lines.Add(sb.ToString());
                 sb.Clear();

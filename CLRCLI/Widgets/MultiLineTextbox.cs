@@ -83,8 +83,10 @@ namespace CLRCLI.Widgets
                     _buffer.Del();
                     break;
                 case ConsoleKey.Home:
+                    _buffer.Home();
                     break;
                 case ConsoleKey.End:
+                    _buffer.End();
                     break;
                 default:
                     if (!Char.IsControl(key.KeyChar))
