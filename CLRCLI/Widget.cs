@@ -3,9 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace CLRCLI
@@ -22,46 +20,60 @@ namespace CLRCLI
     {
         [XmlAttribute]
         public string Id { get; set; }
+
         [XmlAttribute]
         public int Top { get; set; }
+
         [XmlAttribute]
         public int Left { get; set; }
+
         [XmlAttribute]
         public int Width { get; set; }
+
         [XmlAttribute]
         public int Height { get; set; }
+
         [XmlAttribute]
         [DefaultValue(ConsoleColor.Gray)]
         public ConsoleColor Background { get; set; }
+
         [XmlAttribute]
         [DefaultValue(ConsoleColor.White)]
         public ConsoleColor Foreground { get; set; }
+
         [XmlAttribute]
         [DefaultValue(ConsoleColor.Magenta)]
         public ConsoleColor SelectedBackground { get; set; }
+
         [XmlAttribute]
         [DefaultValue(ConsoleColor.DarkMagenta)]
         public ConsoleColor ActiveBackground { get; set; }
+
         [XmlAttribute]
         [DefaultValue(ConsoleColor.Black)]
         public ConsoleColor ActiveForeground { get; set; }
+
         [XmlAttribute]
         [DefaultValue(0)]
         public int TabStop { get; set; }
+
         [XmlAttribute]
         [DefaultValue(BorderStyle.Block)]
         public BorderStyle Border { get; set; }
+
         [XmlAttribute]
         [DefaultValue(true)]
         public bool Enabled { get; set; }
+
         [XmlAttribute]
         [DefaultValue(false)]
         public bool DrawShadow { get; set; }
 
         [XmlIgnore]
-        public Widget Parent {get; internal set;}
+        public Widget Parent { get; internal set; }
 
         private bool _HasFocus;
+
         [XmlIgnore]
         public bool HasFocus
         {
@@ -92,6 +104,7 @@ namespace CLRCLI
         }
 
         internal string _Text = "";
+
         [XmlAttribute]
         [DefaultValue("")]
         public string Text
@@ -107,10 +120,10 @@ namespace CLRCLI
                         parentRedraw = true;
                     }
                     _Text = value;
-                    
+
                     if (TextChanged != null) { TextChanged(this, EventArgs.Empty); }
 
-                    if (Parent != null) 
+                    if (Parent != null)
                     {
                         if (parentRedraw) { Parent.Draw(); }
                         else { Draw(); }
@@ -158,11 +171,15 @@ namespace CLRCLI
         internal abstract void Render();
 
         public event EventHandler Clicked;
+
         public event EventHandler GotFocus;
+
         public event EventHandler LostFocus;
+
         public event EventHandler TextChanged;
 
         private bool _visible = true;
+
         [XmlAttribute]
         [DefaultValue(true)]
         public bool Visible
@@ -181,7 +198,7 @@ namespace CLRCLI
                      * Null check prevents drawing before fully instantiated (specifically when there's no parent).
                      * Works because everything (Except RootWindow) has a parent but only after it has been fully set up.
                      */
-                    if (Parent != null) { Draw(); } 
+                    if (Parent != null) { Draw(); }
                 }
             }
         }
@@ -227,7 +244,10 @@ namespace CLRCLI
             }
         }
 
-        internal Widget(){}
+        internal Widget()
+        {
+        }
+
         public Widget(Widget parent)
         {
             Visible = true;

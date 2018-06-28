@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace CLRCLI.Widgets
@@ -13,7 +11,9 @@ namespace CLRCLI.Widgets
     {
         [XmlIgnore]
         public List<Widget> AllChildren;
+
         private List<Widget> RootFocusableChildren;
+
         private List<Widget> ActivableChildren
         {
             get
@@ -38,7 +38,7 @@ namespace CLRCLI.Widgets
             ActiveBackground = ConsoleColor.DarkMagenta;
             ActiveWidget = null;
             AllowDraw = false;
-            AllChildren = new List<Widget>();            
+            AllChildren = new List<Widget>();
         }
 
         internal override void Render()
@@ -49,6 +49,7 @@ namespace CLRCLI.Widgets
         internal bool AllowDraw { get; private set; }
 
         private Widget _activeWidget;
+
         public Widget ActiveWidget
         {
             get
@@ -145,12 +146,13 @@ namespace CLRCLI.Widgets
                         case ConsoleKey.Tab:
                             CycleFocus();
                             break;
+
                         default:
                             ProcessKey = HandleWidgetInput(k);
                             break;
                     }
                 }
-                
+
                 if (ProcessKey)
                 {
                     switch (k.Key)
@@ -158,22 +160,28 @@ namespace CLRCLI.Widgets
                         case ConsoleKey.Tab:
                             CycleFocus((k.Modifiers == ConsoleModifiers.Shift) ? -1 : 1);
                             break;
+
                         case ConsoleKey.RightArrow:
                             MoveRight();
                             break;
+
                         case ConsoleKey.LeftArrow:
                             MoveLeft();
                             break;
+
                         case ConsoleKey.UpArrow:
                             MoveUp();
                             break;
+
                         case ConsoleKey.DownArrow:
                             MoveDown();
                             break;
+
                         case ConsoleKey.Spacebar:
                         case ConsoleKey.Enter:
                             EnterPressed();
                             break;
+
                         case ConsoleKey.Escape:
                             Running = false;
                             break;

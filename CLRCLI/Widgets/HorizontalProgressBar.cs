@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace CLRCLI.Widgets
@@ -10,12 +6,13 @@ namespace CLRCLI.Widgets
     public class HorizontalProgressBar : Widget
     {
         private int _value;
+
         [XmlAttribute]
         public int Value
         {
             get
-            { 
-                return _value; 
+            {
+                return _value;
             }
             set
             {
@@ -32,7 +29,10 @@ namespace CLRCLI.Widgets
         [XmlAttribute]
         public int MaxValue { get; set; }
 
-        internal HorizontalProgressBar() {}
+        internal HorizontalProgressBar()
+        {
+        }
+
         public HorizontalProgressBar(Widget parent)
             : base(parent)
         {

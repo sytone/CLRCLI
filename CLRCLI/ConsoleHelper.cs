@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CLRCLI
 {
@@ -49,7 +45,9 @@ namespace CLRCLI
 
         internal delegate void DrawBoxMethod(int x, int y, int w, int h, ConsoleColor c);
 
-        internal static void DrawNothing(int x, int y, int w, int h, ConsoleColor c){ }
+        internal static void DrawNothing(int x, int y, int w, int h, ConsoleColor c)
+        {
+        }
 
         internal static void DrawRectSolid(int x, int y, int w, int h, ConsoleColor c)
         {

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CLRCLI.Utils
 {
@@ -27,8 +23,8 @@ namespace CLRCLI.Utils
 
         public BufferLine Merge(BufferLine source)
         {
-            if((TextLength + source.TextLength + 1) >= LongLength)
-                Resize(TextLength + source.LongLength+1);
+            if ((TextLength + source.TextLength + 1) >= LongLength)
+                Resize(TextLength + source.LongLength + 1);
             CopyFrom(source, TextLength);
 
             return this;
@@ -38,10 +34,12 @@ namespace CLRCLI.Utils
         {
             get { return _bufferLine.LongLength; }
         }
+
         public long TextLength
         {
             get { return _occupyBajts; }
         }
+
         public Char this[long index]
         {
             get { return _bufferLine[index]; }
@@ -58,12 +56,14 @@ namespace CLRCLI.Utils
                     _occupyBajts = index;
             }
         }
+
         public void Erase(long index)
         {
-            for(long c=index; c<TextLength; ++c)
+            for (long c = index; c < TextLength; ++c)
                 _bufferLine[c] = char.MinValue;
             _occupyBajts = index;
         }
+
         public void CopyFrom(BufferLine source, long dstIndex, long srcIndex = 0L)
         {
             if (LongLength <= dstIndex + source.TextLength - srcIndex)
@@ -75,6 +75,7 @@ namespace CLRCLI.Utils
             }
             _occupyBajts = dstIndex + source.TextLength - srcIndex;
         }
+
         public void CopyTo(BufferLine destination, long dstIndex, long srcIndex = 0L)
         {
             destination.CopyFrom(this, dstIndex, srcIndex);

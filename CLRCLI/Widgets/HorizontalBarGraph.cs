@@ -1,17 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace CLRCLI.Widgets
 {
     public class HorizontalBarGraph : Widget
     {
-        internal HorizontalBarGraph() {
+        internal HorizontalBarGraph()
+        {
             Entries = new List<int>();
         }
+
         public HorizontalBarGraph(Widget parent)
             : base(parent)
         {

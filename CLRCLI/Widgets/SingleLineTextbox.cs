@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Xml.Serialization;
 
@@ -33,13 +30,14 @@ namespace CLRCLI.Widgets
             ToggleCursorTimer.Start();
         }
 
-        void ToggleCursorTimer_Elapsed(object sender, ElapsedEventArgs e)
+        private void ToggleCursorTimer_Elapsed(object sender, ElapsedEventArgs e)
         {
             CursorVisible = !CursorVisible;
             Draw();
         }
 
         private int _CursorPosition = 1;
+
         [XmlIgnore]
         public int CursorPosition
         {
@@ -53,6 +51,7 @@ namespace CLRCLI.Widgets
                 }
             }
         }
+
         private bool CursorVisible = false;
         private char CursorChar = '_';
 
@@ -91,7 +90,6 @@ namespace CLRCLI.Widgets
                     {
                         drawText = drawText.Substring(startPos);
                     }
-                    
                 }
                 else
                 {
@@ -116,30 +114,37 @@ namespace CLRCLI.Widgets
                 case ConsoleKey.Enter:
                 case ConsoleKey.Escape:
                     return true;
+
                 case ConsoleKey.Backspace:
                     RemoveBehind();
                     break;
+
                 case ConsoleKey.RightArrow:
                     CursorPosition++;
                     CursorPosition = Math.Min(CursorPosition, Text.Length + 1);
                     Draw();
                     break;
+
                 case ConsoleKey.LeftArrow:
                     CursorPosition--;
                     CursorPosition = Math.Max(CursorPosition, 1);
                     Draw();
                     break;
+
                 case ConsoleKey.Delete:
                     DeleteKey();
                     break;
+
                 case ConsoleKey.Home:
                     CursorPosition = 1;
                     Draw();
                     break;
+
                 case ConsoleKey.End:
                     CursorPosition = Text.Length + 1;
                     Draw();
                     break;
+
                 default:
                     if (!Char.IsControl(key.KeyChar))
                     {

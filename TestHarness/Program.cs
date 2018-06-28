@@ -1,30 +1,24 @@
-﻿using CLRCLI;
-using CLRCLI.Widgets;
+﻿using CLRCLI.Widgets;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Timers;
 
 namespace TestHarness
 {
-    class Program
+    internal class Program
     {
-        const int STD_OUTPUT_HANDLE = -11;
-        const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 4;
+        private const int STD_OUTPUT_HANDLE = -11;
+        private const uint ENABLE_VIRTUAL_TERMINAL_PROCESSING = 4;
 
         [DllImport("kernel32.dll", SetLastError = true)]
-        static extern IntPtr GetStdHandle(int nStdHandle);
+        private static extern IntPtr GetStdHandle(int nStdHandle);
 
         [DllImport("kernel32.dll")]
-        static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
+        private static extern bool GetConsoleMode(IntPtr hConsoleHandle, out uint lpMode);
 
         [DllImport("kernel32.dll")]
-        static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
+        private static extern bool SetConsoleMode(IntPtr hConsoleHandle, uint dwMode);
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var handle = GetStdHandle(STD_OUTPUT_HANDLE);
             uint mode;
@@ -32,11 +26,10 @@ namespace TestHarness
             mode |= ENABLE_VIRTUAL_TERMINAL_PROCESSING;
             SetConsoleMode(handle, mode);
 
-
             var root = new RootWindow();
 
             new Label(root) { Text = "Test of TextBoxes!", Top = 2, Left = 2 };
-            
+
             var mLine = new MultiLineTextbox(root);
             mLine.Width = root.Width - 20;
             mLine.Height = 10;
@@ -66,7 +59,7 @@ namespace TestHarness
             root.Run();
         }
 
-        static void button_Clicked(object sender, EventArgs e)
+        private static void button_Clicked(object sender, EventArgs e)
         {
             (sender as Button).RootWindow.Detach();
         }

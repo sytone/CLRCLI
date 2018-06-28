@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace CLRCLI.Widgets
 {
     public class SlideToggle : Widget, IFocusable
     {
-        internal SlideToggle() {
+        internal SlideToggle()
+        {
             this.Clicked += SlideToggle_Clicked;
         }
+
         public SlideToggle(Widget parent)
             : base(parent)
         {
@@ -25,6 +23,7 @@ namespace CLRCLI.Widgets
         public event EventHandler ValueChanged;
 
         private bool _checked;
+
         [XmlAttribute]
         public bool Checked
         {
@@ -43,7 +42,7 @@ namespace CLRCLI.Widgets
             }
         }
 
-        void SlideToggle_Clicked(object sender, EventArgs e)
+        private void SlideToggle_Clicked(object sender, EventArgs e)
         {
             Checked = !Checked;
         }

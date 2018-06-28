@@ -1,14 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CLRCLI.Widgets
 {
     public class Dialog : Widget
     {
-        internal Dialog() { }
+        internal Dialog()
+        {
+        }
+
         public Dialog(Widget parent)
             : base(parent)
         {
@@ -35,8 +35,8 @@ namespace CLRCLI.Widgets
 
             DrawBackground();
 
-            BorderDrawMethod(DisplayLeft - 1, DisplayTop - 1, Width + 1, Height + 2, Foreground); 
-            DrawLabel(); 
+            BorderDrawMethod(DisplayLeft - 1, DisplayTop - 1, Width + 1, Height + 2, Foreground);
+            DrawLabel();
         }
 
         private void DrawLabel()
