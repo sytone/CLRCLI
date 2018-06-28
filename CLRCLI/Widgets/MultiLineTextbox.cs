@@ -42,7 +42,7 @@ namespace CLRCLI.Widgets
         }
 
         private bool CursorVisible = false;
-        private char CursorChar = '_';
+        //private char CursorChar = '_';
 
         internal override void Render()
         {
