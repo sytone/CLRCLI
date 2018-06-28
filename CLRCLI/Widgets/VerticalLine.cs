@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CLRCLI.Widgets
 {
     public class VerticalLine : Widget
     {
-        internal VerticalLine() { }
+        internal VerticalLine()
+        {
+        }
+
         public VerticalLine(Widget parent)
             : base(parent)
         {

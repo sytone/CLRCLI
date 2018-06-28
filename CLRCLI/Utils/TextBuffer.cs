@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace CLRCLI.Utils
 {
-    struct CoursorPos
+    internal struct CoursorPos
     {
         public long Col;
         public long Line;
     }
-    
+
     internal class TextBuffer
     {
         private const long InitialNumberOfLines = 80;
@@ -23,7 +21,7 @@ namespace CLRCLI.Utils
         private CoursorPos _pos;
 
         public TextBuffer() : this(InitialNumberOfLines, InitialNumberOfColumns)
-        {}
+        { }
 
         public TextBuffer(long lines, long columns)
         {
@@ -44,7 +42,8 @@ namespace CLRCLI.Utils
                 newLine = new BufferLine(_buffer[_pos.Line].TextLength - _pos.Col + newLineSize);
                 newLine.CopyFrom(_buffer[_pos.Line], 0, _pos.Col);
                 _buffer[_pos.Line].Erase(_pos.Col);
-            } else
+            }
+            else
                 newLine = new BufferLine(newLineSize);
             long l, dl;
             for (l = 0; l <= _pos.Line && l < _buffer.LongLength; ++l)
@@ -57,16 +56,16 @@ namespace CLRCLI.Utils
             _buffer = tmp;
             return this;
         }
-        
+
         public TextBuffer Add(Char ch)
         {
-            if(ch == '\n')
+            if (ch == '\n')
             {
                 NewLine();
                 MoveCoursor(-_pos.Col, 1);
                 return this;
             }
-            if(_buffer.LongLength <= _pos.Line)
+            if (_buffer.LongLength <= _pos.Line)
             {
                 NewLine(howManyLines: _pos.Line + 1 - _buffer.LongLength);
             }
@@ -110,11 +109,10 @@ namespace CLRCLI.Utils
                 }
                 else
                     --_pos.Line;
-                
             }
             else if (_buffer[_pos.Line].LongLength <= _pos.Col)
             {
-                if(_buffer[_pos.Line].LongLength == _pos.Col)
+                if (_buffer[_pos.Line].LongLength == _pos.Col)
                 {
                     _buffer[_pos.Line][_pos.Col - 1] = Char.MinValue;
                 }
@@ -163,9 +161,9 @@ namespace CLRCLI.Utils
                     return this;
                 if (_buffer[_pos.Line].LongLength <= _pos.Col)
                     _buffer[_pos.Line].Resize(_pos.Col + ResizeColumnDelta - _buffer[_pos.Line].LongLength);
-                _buffer[_pos.Line][_pos.Col-1] = ' ';
+                _buffer[_pos.Line][_pos.Col - 1] = ' ';
                 _buffer[_pos.Line].Merge(_buffer[_pos.Line + 1]);
-                
+
                 for (long l = _pos.Line + 1; l < _buffer.LongLength - 1; ++l)
                     _buffer[l] = _buffer[l + 1];
                 _buffer[_buffer.LongLength - 1] = new BufferLine(ResizeColumnDelta);
@@ -186,11 +184,13 @@ namespace CLRCLI.Utils
             _pos.Col = 0;
             return this;
         }
+
         public TextBuffer End()
         {
             _pos.Col = _buffer[_pos.Line].TextLength;
             return this;
         }
+
         public TextBuffer MoveCoursor(long x, long y)
         {
             _pos.Col += x;
@@ -201,14 +201,14 @@ namespace CLRCLI.Utils
                 _pos.Line = 0;
             return this;
         }
-        
+
         public List<string> RenderString(long x, long y, long width, long height, bool markCoursor)
         {
             List<string> lines = new List<string>();
             StringBuilder sb = new StringBuilder();
             for (long l = y; l < y + height; ++l)
             {
-                if(l > _buffer.LongLength)
+                if (l > _buffer.LongLength)
                 {
                     lines.Add(new string(' ', (int)width));
                     continue;

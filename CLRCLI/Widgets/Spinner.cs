@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Timers;
 using System.Xml.Serialization;
 
@@ -16,7 +12,7 @@ namespace CLRCLI.Widgets
             timer.Elapsed += timer_Elapsed;
         }
 
-        public Spinner(Widget parent) : base(parent) 
+        public Spinner(Widget parent) : base(parent)
         {
             Background = Parent.Background;
             Foreground = ConsoleColor.White;
@@ -26,7 +22,7 @@ namespace CLRCLI.Widgets
             timer.Elapsed += timer_Elapsed;
         }
 
-        void timer_Elapsed(object sender, ElapsedEventArgs e)
+        private void timer_Elapsed(object sender, ElapsedEventArgs e)
         {
             Draw();
         }
@@ -51,6 +47,7 @@ namespace CLRCLI.Widgets
         }
 
         private bool _spinning = false;
+
         [XmlAttribute]
         public bool Spinning
         {

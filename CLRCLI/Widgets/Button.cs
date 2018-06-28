@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CLRCLI.Widgets
 {
     public class Button : Widget, IFocusable
     {
-        internal Button() {}
+        internal Button()
+        {
+        }
+
         public Button(Widget parent)
             : base(parent)
         {

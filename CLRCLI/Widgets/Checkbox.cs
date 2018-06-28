@@ -1,17 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace CLRCLI.Widgets
 {
     public class Checkbox : Widget, IFocusable
     {
-        internal Checkbox() {
+        internal Checkbox()
+        {
             this.Clicked += Checkbox_Clicked;
         }
+
         public Checkbox(Widget parent)
             : base(parent)
         {
@@ -23,7 +21,7 @@ namespace CLRCLI.Widgets
             this.Clicked += Checkbox_Clicked;
         }
 
-        void Checkbox_Clicked(object sender, EventArgs e)
+        private void Checkbox_Clicked(object sender, EventArgs e)
         {
             Checked = !Checked;
         }
@@ -31,6 +29,7 @@ namespace CLRCLI.Widgets
         public event EventHandler ValueChanged;
 
         private bool _checked;
+
         [XmlAttribute]
         public bool Checked
         {
@@ -56,7 +55,7 @@ namespace CLRCLI.Widgets
             if (HasFocus)
             {
                 ConsoleHelper.DrawText(DisplayLeft, DisplayTop, Foreground, ActiveBackground, "[{0}]", c);
-                ConsoleHelper.DrawText(DisplayLeft + 4, DisplayTop, Foreground, Background,  Text);
+                ConsoleHelper.DrawText(DisplayLeft + 4, DisplayTop, Foreground, Background, Text);
             }
             else
             {

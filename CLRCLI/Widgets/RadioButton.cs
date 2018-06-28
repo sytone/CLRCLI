@@ -1,17 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace CLRCLI.Widgets
 {
     public class RadioButton : Widget, IFocusable
     {
-        internal RadioButton() {
+        internal RadioButton()
+        {
             this.Clicked += OptionBox_Clicked;
         }
+
         public RadioButton(Widget parent)
             : base(parent)
         {
@@ -23,7 +22,7 @@ namespace CLRCLI.Widgets
             this.Clicked += OptionBox_Clicked;
         }
 
-        void OptionBox_Clicked(object sender, EventArgs e)
+        private void OptionBox_Clicked(object sender, EventArgs e)
         {
             Checked = true;
         }
@@ -31,6 +30,7 @@ namespace CLRCLI.Widgets
         public event EventHandler ValueChanged;
 
         private bool _checked;
+
         [XmlAttribute]
         public bool Checked
         {

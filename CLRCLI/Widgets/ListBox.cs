@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Serialization;
 
 namespace CLRCLI.Widgets
 {
     public class ListBox : Widget, IFocusable, IAcceptInput
     {
-        internal ListBox() {
+        internal ListBox()
+        {
             Items.CollectionChanged += Items_CollectionChanged;
         }
+
         public ListBox(Widget Parent)
             : base(Parent)
         {
@@ -23,7 +21,7 @@ namespace CLRCLI.Widgets
             Items.CollectionChanged += Items_CollectionChanged;
         }
 
-        void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             Draw();
         }
@@ -32,6 +30,7 @@ namespace CLRCLI.Widgets
         public ObservableCollection<Object> Items = new ObservableCollection<Object>();
 
         private int _SelectedIndex = 0;
+
         [XmlIgnore]
         public int SelectedIndex
         {
@@ -110,13 +109,14 @@ namespace CLRCLI.Widgets
                 case ConsoleKey.UpArrow:
                     if (SelectedIndex > 0) { SelectedIndex--; return false; }
                     return true;
+
                 case ConsoleKey.DownArrow:
-                    if (SelectedIndex < Items.Count - 1) { SelectedIndex++; return false; } 
+                    if (SelectedIndex < Items.Count - 1) { SelectedIndex++; return false; }
                     return true;
+
                 default:
                     return true;
             }
-            
         }
     }
 }

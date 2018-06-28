@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace CLRCLI.Widgets
+﻿namespace CLRCLI.Widgets
 {
-    interface IFocusable
+    internal interface IFocusable
     {
     }
 }
