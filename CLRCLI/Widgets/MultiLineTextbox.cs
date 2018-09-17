@@ -15,6 +15,14 @@ namespace CLRCLI.Widgets
 
         private Utils.TextBuffer _buffer = new Utils.TextBuffer();
 
+        public void AddChar(char character)
+        {
+            if (!Char.IsControl(character))
+            {
+                _buffer.Add(character);
+            }        
+        }
+
         internal MultiLineTextbox()
         {
             ToggleCursorTimer.Elapsed += ToggleCursorTimer_Elapsed;
@@ -56,11 +64,11 @@ namespace CLRCLI.Widgets
             {
                 //Keys we don't specifically want to handle, just return true.
                 case ConsoleKey.UpArrow:
-                    _buffer.MoveCoursor(0, -1);
+                    _buffer.MoveCursor(0, -1);
                     break;
 
                 case ConsoleKey.DownArrow:
-                    _buffer.MoveCoursor(0, 1);
+                    _buffer.MoveCursor(0, 1);
                     break;
 
                 case ConsoleKey.Enter:
@@ -75,11 +83,11 @@ namespace CLRCLI.Widgets
                     break;
 
                 case ConsoleKey.RightArrow:
-                    _buffer.MoveCoursor(1, 0);
+                    _buffer.MoveCursor(1, 0);
                     break;
 
                 case ConsoleKey.LeftArrow:
-                    _buffer.MoveCoursor(-1, 0);
+                    _buffer.MoveCursor(-1, 0);
                     break;
 
                 case ConsoleKey.Delete:

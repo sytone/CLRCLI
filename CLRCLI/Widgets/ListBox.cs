@@ -21,6 +21,8 @@ namespace CLRCLI.Widgets
             Items.CollectionChanged += Items_CollectionChanged;
         }
 
+        public event EventHandler ValueChanged;
+
         private void Items_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             Draw();
@@ -107,11 +109,27 @@ namespace CLRCLI.Widgets
             switch (key.Key)
             {
                 case ConsoleKey.UpArrow:
-                    if (SelectedIndex > 0) { SelectedIndex--; return false; }
+                    if (SelectedIndex > 0) 
+                    { 
+                        SelectedIndex--; 
+                        if (ValueChanged != null) 
+                        { 
+                            ValueChanged(this, EventArgs.Empty); 
+                        } 
+                        return false; 
+                    }
                     return true;
 
                 case ConsoleKey.DownArrow:
-                    if (SelectedIndex < Items.Count - 1) { SelectedIndex++; return false; }
+                    if (SelectedIndex < Items.Count - 1)
+                    { 
+                        SelectedIndex++; 
+                        if (ValueChanged != null) 
+                        { 
+                            ValueChanged(this, EventArgs.Empty); 
+                        } 
+                        return false; 
+                    }
                     return true;
 
                 default:

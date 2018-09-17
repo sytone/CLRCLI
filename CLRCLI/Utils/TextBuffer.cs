@@ -4,9 +4,9 @@ using System.Text;
 
 namespace CLRCLI.Utils
 {
-    internal struct CoursorPos
+    internal struct CursorPosition
     {
-        public long Col;
+        public long Column;
         public long Line;
     }
 
@@ -18,7 +18,7 @@ namespace CLRCLI.Utils
 
         private BufferLine[] _buffer;
         private long _maxLine = 0, _maxCol = 0;
-        private CoursorPos _pos;
+        private CursorPosition _pos;
 
         public TextBuffer() : this(InitialNumberOfLines, InitialNumberOfColumns)
         { }
@@ -37,11 +37,11 @@ namespace CLRCLI.Utils
         {
             BufferLine[] tmp = new BufferLine[_buffer.LongLength + howManyLines];
             BufferLine newLine;
-            if (_pos.Col < _buffer[_pos.Line].TextLength)
+            if (_pos.Column < _buffer[_pos.Line].TextLength)
             {
-                newLine = new BufferLine(_buffer[_pos.Line].TextLength - _pos.Col + newLineSize);
-                newLine.CopyFrom(_buffer[_pos.Line], 0, _pos.Col);
-                _buffer[_pos.Line].Erase(_pos.Col);
+                newLine = new BufferLine(_buffer[_pos.Line].TextLength - _pos.Column + newLineSize);
+                newLine.CopyFrom(_buffer[_pos.Line], 0, _pos.Column);
+                _buffer[_pos.Line].Erase(_pos.Column);
             }
             else
                 newLine = new BufferLine(newLineSize);
@@ -62,7 +62,7 @@ namespace CLRCLI.Utils
             if (ch == '\n')
             {
                 NewLine();
-                MoveCoursor(-_pos.Col, 1);
+                MoveCursor(-_pos.Column, 1);
                 return this;
             }
             if (_buffer.LongLength <= _pos.Line)
@@ -70,29 +70,29 @@ namespace CLRCLI.Utils
                 NewLine(howManyLines: _pos.Line + 1 - _buffer.LongLength);
             }
 
-            if (_buffer[_pos.Line].LongLength - 1 <= _pos.Col)
+            if (_buffer[_pos.Line].LongLength - 1 <= _pos.Column)
             {
-                _buffer[_pos.Line].Resize(_pos.Col + ResizeColumnDelta - _buffer[_pos.Line].LongLength);
-                _buffer[_pos.Line][_pos.Col] = ch;
+                _buffer[_pos.Line].Resize(_pos.Column + ResizeColumnDelta - _buffer[_pos.Line].LongLength);
+                _buffer[_pos.Line][_pos.Column] = ch;
             }
             else
             {
                 long c;
-                for (c = _buffer[_pos.Line].LongLength - 1; c >= _pos.Col && _buffer[_pos.Line][c] == Char.MinValue; --c)
+                for (c = _buffer[_pos.Line].LongLength - 1; c >= _pos.Column && _buffer[_pos.Line][c] == Char.MinValue; --c)
                     ;
                 if (c == _buffer[_pos.Line].LongLength - 1)
                     _buffer[_pos.Line].Resize(ResizeColumnDelta);
 
-                for (; c >= _pos.Col; --c)
+                for (; c >= _pos.Column; --c)
                 {
                     _buffer[_pos.Line][c + 1] = _buffer[_pos.Line][c];
                 }
-                _buffer[_pos.Line][_pos.Col] = ch;
-                for (c = _pos.Col - 1; c >= 0; --c)
+                _buffer[_pos.Line][_pos.Column] = ch;
+                for (c = _pos.Column - 1; c >= 0; --c)
                     if (_buffer[_pos.Line][c] == Char.MinValue)
                         _buffer[_pos.Line][c] = ' ';
             }
-            ++_pos.Col;
+            ++_pos.Column;
 
             return this;
         }
@@ -101,26 +101,26 @@ namespace CLRCLI.Utils
         {
             if (_buffer.LongLength <= _pos.Line)
             {
-                if (_pos.Col > 0)
-                    --_pos.Col;
+                if (_pos.Column > 0)
+                    --_pos.Column;
                 else if (_buffer.LongLength == _pos.Line)
                 {
-                    _pos.Col = _buffer[--_pos.Line].LongLength;
+                    _pos.Column = _buffer[--_pos.Line].LongLength;
                 }
                 else
                     --_pos.Line;
             }
-            else if (_buffer[_pos.Line].LongLength <= _pos.Col)
+            else if (_buffer[_pos.Line].LongLength <= _pos.Column)
             {
-                if (_buffer[_pos.Line].LongLength == _pos.Col)
+                if (_buffer[_pos.Line].LongLength == _pos.Column)
                 {
-                    _buffer[_pos.Line][_pos.Col - 1] = Char.MinValue;
+                    _buffer[_pos.Line][_pos.Column - 1] = Char.MinValue;
                 }
-                --_pos.Col;
+                --_pos.Column;
             }
             else
             {
-                if (_pos.Col == 0)
+                if (_pos.Column == 0)
                 {
                     if (_pos.Line == 0)
                         return this;
@@ -132,17 +132,17 @@ namespace CLRCLI.Utils
                         _buffer[l] = _buffer[l + 1];
                     _buffer[_buffer.LongLength - 1] = new BufferLine(ResizeColumnDelta);
 
-                    _pos.Col = endOfPrevLine;
+                    _pos.Column = endOfPrevLine;
                     --_pos.Line;
                 }
                 else
                 {
-                    for (long c = _pos.Col - 1; c <= _buffer[_pos.Line].LongLength - 2; ++c)
+                    for (long c = _pos.Column - 1; c <= _buffer[_pos.Line].LongLength - 2; ++c)
                     {
                         _buffer[_pos.Line][c] = _buffer[_pos.Line][c + 1];
                     }
                     _buffer[_pos.Line][_buffer[_pos.Line].LongLength - 1] = Char.MinValue;
-                    --_pos.Col;
+                    --_pos.Column;
                 }
             }
             return this;
@@ -155,13 +155,13 @@ namespace CLRCLI.Utils
                 //there is nothing
                 return this;
             }
-            if (_buffer[_pos.Line].TextLength <= _pos.Col)
+            if (_buffer[_pos.Line].TextLength <= _pos.Column)
             {
                 if (_buffer.LongLength - 1 == _pos.Line)
                     return this;
-                if (_buffer[_pos.Line].LongLength <= _pos.Col)
-                    _buffer[_pos.Line].Resize(_pos.Col + ResizeColumnDelta - _buffer[_pos.Line].LongLength);
-                _buffer[_pos.Line][_pos.Col - 1] = ' ';
+                if (_buffer[_pos.Line].LongLength <= _pos.Column)
+                    _buffer[_pos.Line].Resize(_pos.Column + ResizeColumnDelta - _buffer[_pos.Line].LongLength);
+                _buffer[_pos.Line][_pos.Column - 1] = ' ';
                 _buffer[_pos.Line].Merge(_buffer[_pos.Line + 1]);
 
                 for (long l = _pos.Line + 1; l < _buffer.LongLength - 1; ++l)
@@ -170,7 +170,7 @@ namespace CLRCLI.Utils
             }
             else
             {
-                for (long c = _pos.Col; c < _buffer[_pos.Line].TextLength - 1; ++c)
+                for (long c = _pos.Column; c < _buffer[_pos.Line].TextLength - 1; ++c)
                 {
                     _buffer[_pos.Line][c] = _buffer[_pos.Line][c + 1];
                 }
@@ -181,22 +181,22 @@ namespace CLRCLI.Utils
 
         public TextBuffer Home()
         {
-            _pos.Col = 0;
+            _pos.Column = 0;
             return this;
         }
 
         public TextBuffer End()
         {
-            _pos.Col = _buffer[_pos.Line].TextLength;
+            _pos.Column = _buffer[_pos.Line].TextLength;
             return this;
         }
 
-        public TextBuffer MoveCoursor(long x, long y)
+        public TextBuffer MoveCursor(long x, long y)
         {
-            _pos.Col += x;
+            _pos.Column += x;
             _pos.Line += y;
-            if (_pos.Col < 0)
-                _pos.Col = 0;
+            if (_pos.Column < 0)
+                _pos.Column = 0;
             if (_pos.Line < 0)
                 _pos.Line = 0;
             return this;
@@ -218,7 +218,7 @@ namespace CLRCLI.Utils
                     Char character = c < _buffer[l].LongLength ? _buffer[l][c] : ' ';
                     if (character == Char.MinValue)
                         character = ' ';
-                    if (l == _pos.Line && c == _pos.Col)
+                    if (l == _pos.Line && c == _pos.Column)
                     {
                         sb.Append("\x1B[4m");
                         sb.Append(character);

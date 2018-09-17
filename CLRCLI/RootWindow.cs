@@ -124,6 +124,7 @@ namespace CLRCLI.Widgets
         /// </summary>
         public void Run()
         {
+            bool CursorVisibleState = Console.CursorVisible;
             Running = true;
             AllowDraw = true;
             Console.CursorVisible = false;
@@ -188,6 +189,8 @@ namespace CLRCLI.Widgets
                     }
                 }
             }
+
+            Console.CursorVisible = CursorVisibleState;
         }
 
         private bool HandleWidgetInput(ConsoleKeyInfo k)
