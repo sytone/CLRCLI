@@ -13,23 +13,6 @@ namespace CLRCLI.Utils
             _occupyBajts = 0;
         }
 
-        public BufferLine Resize(long delta)
-        {
-            Char[] tmp = new Char[_bufferLine.LongLength + delta];
-            _bufferLine.CopyTo(tmp, 0L);
-            _bufferLine = tmp;
-            return this;
-        }
-
-        public BufferLine Merge(BufferLine source)
-        {
-            if ((TextLength + source.TextLength + 1) >= LongLength)
-                Resize(TextLength + source.LongLength + 1);
-            CopyFrom(source, TextLength);
-
-            return this;
-        }
-
         public long LongLength
         {
             get { return _bufferLine.LongLength; }
@@ -55,6 +38,23 @@ namespace CLRCLI.Utils
                 else if ((index + 1) == _occupyBajts && value == Char.MinValue)
                     _occupyBajts = index;
             }
+        }
+
+        public BufferLine Resize(long delta)
+        {
+            Char[] tmp = new Char[_bufferLine.LongLength + delta];
+            _bufferLine.CopyTo(tmp, 0L);
+            _bufferLine = tmp;
+            return this;
+        }
+
+        public BufferLine Merge(BufferLine source)
+        {
+            if ((TextLength + source.TextLength + 1) >= LongLength)
+                Resize(TextLength + source.LongLength + 1);
+            CopyFrom(source, TextLength);
+
+            return this;
         }
 
         public void Erase(long index)
