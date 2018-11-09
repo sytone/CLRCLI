@@ -1,6 +1,7 @@
 ﻿using CLRCLI.Widgets;
 using System;
 using System.Runtime.InteropServices;
+using System.IO;
 
 namespace TestHarness
 {
@@ -28,13 +29,21 @@ namespace TestHarness
 
             var root = new RootWindow();
 
-            new Label(root) { Text = "Test of TextBoxes!", Top = 2, Left = 2 };
+            var dialog = new Dialog(root) { Text = "Hello World!", Width = 60, Height = 32, Top = 4, Left = 4};
+            var lab = new Label(dialog) {Text = "This is a dialog!", Top = 2, Left = 2};
+            lab.AutoUpdateSchedule = 1000;
+            lab.UpdateAction = (() => DateTime.Now.ToString("HH:mm:ss"));
+            lab.StartUpdate();
 
-            var mLine = new MultiLineTextbox(root);
-            mLine.Width = root.Width - 20;
-            mLine.Height = 10;
-            mLine.Top = 10;
-            mLine.Left = 10;
+
+            // new Label(root) { Text = "Test of TextBoxes!", Top = 2, Left = 2 };
+
+            // var mLine = new MultiLineTextbox(root);
+            // mLine.Width = root.Width - 20;
+            // mLine.Height = 10;
+            // mLine.Top = 10;
+            // mLine.Left = 10;
+            // mLine.TextChanged += MLine_TextChanged;   
 
             /*var dialog = new Dialog(root) { Text = "Hello World!", Width = 60, Height = 32, Top = 4, Left = 4, Border = BorderStyle.Thick };
             new Label(dialog) {Text = "This is a dialog!", Top = 2, Left = 2};
@@ -57,6 +66,12 @@ namespace TestHarness
             button.Clicked += button_Clicked;
             */
             root.Run();
+        }
+
+        private static void MLine_TextChanged(object sender, EventArgs e)
+        {
+            var content = (sender as MultiLineTextbox).Text;
+            File.WriteAllText(".\\dump.txt", content);
         }
 
         private static void button_Clicked(object sender, EventArgs e)

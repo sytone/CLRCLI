@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Xml.Serialization;
+using System.Management.Automation;
 
 namespace CLRCLI.Widgets
 {
@@ -39,6 +40,9 @@ namespace CLRCLI.Widgets
             ActiveWidget = null;
             AllowDraw = false;
             AllChildren = new List<Widget>();
+            PowerShell ps = PowerShell.Create();
+            //Runspace runspace = RunspaceFactory.CreateRunspace();
+            //runspace.Open();
         }
 
         internal override void Render()

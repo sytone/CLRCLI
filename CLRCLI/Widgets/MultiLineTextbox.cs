@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Timers;
 using System.Xml.Serialization;
@@ -57,6 +57,11 @@ namespace CLRCLI.Widgets
                 ConsoleHelper.DrawText(DisplayLeft, DisplayTop + i, Foreground, drawBG, drawText[i]);
             }
         }
+
+        // private void NotifyHandlersOfUpdateToText()
+        // {
+        //     if (TextChanged != null) { TextChanged(this, EventArgs.Empty); }
+        // }
 
         public bool Keypress(ConsoleKeyInfo key)
         {
